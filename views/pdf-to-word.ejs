@@ -1,0 +1,36 @@
+<%- include('header') %>
+
+<div class="container">
+  <section class="hero">
+    <h1>PDF to Word Converter</h1>
+    <p>Convert your PDF files to editable Word documents</p>
+  </section>
+
+  <div class="upload-area" id="uploadArea">
+    <div class="upload-area-icon">📄</div>
+    <h3>Drop your PDF file here</h3>
+    <p>or click to browse</p>
+    <input type="file" id="pdfFile" class="file-input" accept=".pdf">
+    <button class="btn btn-primary" onclick="document.getElementById('pdfFile').click()">Select PDF File</button>
+    <div class="file-list" id="fileList"></div>
+  </div>
+
+  <div class="processing" id="processing">
+    <div class="spinner"></div>
+    <h3>Converting your PDF...</h3>
+    <p>This may take a few moments</p>
+  </div>
+
+  <div class="result-section" id="resultSection">
+    <div class="success-icon" id="successIcon">✓</div>
+    <div class="error-icon" id="errorIcon" style="display: none;">✗</div>
+    <h2 id="resultTitle">Conversion Successful!</h2>
+    <p id="resultMessage"></p>
+    <a href="#" id="downloadBtn" class="btn btn-primary" style="display: none;">Download Word Document</a>
+    <button class="btn btn-secondary" onclick="location.reload()">Convert Another File</button>
+  </div>
+</div>
+
+<script src="/js/pdf-to-word.js"></script>
+
+<%- include('footer') %>

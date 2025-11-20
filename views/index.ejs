@@ -1,0 +1,32 @@
+<%- include('header') %>
+
+<div class="container">
+  <section class="hero">
+    <h1>Welcome to <%= websiteName %></h1>
+    <p>Convert your documents easily and quickly</p>
+  </section>
+
+  <div class="tools-grid">
+    <a href="/pdf-to-word" class="tool-card">
+      <div class="tool-icon">📄</div>
+      <h3>PDF to Word</h3>
+      <p>Convert PDF documents to editable Word files (.docx)</p>
+      <span class="btn btn-primary">Start Converting</span>
+    </a>
+
+    <a href="/jpg-to-pdf" class="tool-card">
+      <div class="tool-icon">🖼️</div>
+      <h3>JPG to PDF</h3>
+      <p>Convert JPG images to PDF documents instantly</p>
+      <span class="btn btn-secondary">Start Converting</span>
+    </a>
+  </div>
+
+  <div class="content-section">
+    <h2>Why Choose <%= websiteName %>?</h2>
+    <p>Our document conversion tools are designed to be fast, reliable, and easy to use. Whether you need to convert PDFs to editable Word documents or combine multiple images into a single PDF, we've got you covered.</p>
+    <p>All conversions are processed securely, and your files are automatically deleted after processing to ensure your privacy.</p>
+  </div>
+</div>
+
+<%- include('footer') %>
