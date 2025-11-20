@@ -26,6 +26,11 @@ router.post('/convert/pdf-to-word', upload.single('pdfFile'), async (req, res) =
     return res.status(400).json({ success: false, error: 'No file uploaded' });
   }
 
+  if (!req.file.originalname.toLowerCase().endsWith('.pdf')) {
+    fs.unlink(req.file.path, () => {});
+    return res.status(400).json({ success: false, error: 'Only PDF files are supported' });
+  }
+
   const pdfPath = req.file.path;
   const outputFilename = req.file.filename.replace(/\.pdf$/i, '.docx');
   const outputPath = path.join(config.RESULTS_DIR, outputFilename);
@@ -44,13 +49,30 @@ router.post('/convert/pdf-to-word', upload.single('pdfFile'), async (req, res) =
     if (err) {
       return res.status(500).json({ 
         success: false, 
-        error: 'Conversion failed: ' + err.message 
+        error: 'Conversion failed. Please ensure the PDF is valid and not corrupted.' 
+      });
+    }
+
+    if (!results || results.length === 0) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'No response from conversion process' 
       });
     }
 
     try {
-      const result = JSON.parse(results[0]);
+      const lastResult = results[results.length - 1];
+      const result = JSON.parse(lastResult);
       if (result.success) {
+        req.session.lastConversion = {
+          file: outputFilename,
+          timestamp: Date.now()
+        };
+        
+        setTimeout(() => {
+          fs.unlink(outputPath, () => {});
+        }, 600000);
+
         res.json({
           success: true,
           message: result.message,
@@ -58,9 +80,11 @@ router.post('/convert/pdf-to-word', upload.single('pdfFile'), async (req, res) =
           filename: outputFilename
         });
       } else {
-        res.status(500).json({ success: false, error: result.error });
+        fs.unlink(outputPath, () => {});
+        res.status(400).json({ success: false, error: result.error || 'Conversion failed' });
       }
     } catch (e) {
+      fs.unlink(outputPath, () => {});
       res.status(500).json({ success: false, error: 'Failed to parse conversion result' });
     }
   });
@@ -69,6 +93,17 @@ router.post('/convert/pdf-to-word', upload.single('pdfFile'), async (req, res) =
 router.post('/convert/jpg-to-pdf', upload.array('imageFiles', 10), async (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ success: false, error: 'No files uploaded' });
+  }
+
+  const validExtensions = ['.jpg', '.jpeg', '.png'];
+  const invalidFiles = req.files.filter(file => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    return !validExtensions.includes(ext);
+  });
+
+  if (invalidFiles.length > 0) {
+    req.files.forEach(file => fs.unlink(file.path, () => {}));
+    return res.status(400).json({ success: false, error: 'Only JPG and PNG files are supported' });
   }
 
   const imagePaths = req.files.map(file => file.path);
@@ -91,13 +126,30 @@ router.post('/convert/jpg-to-pdf', upload.array('imageFiles', 10), async (req, r
     if (err) {
       return res.status(500).json({ 
         success: false, 
-        error: 'Conversion failed: ' + err.message 
+        error: 'Conversion failed. Please ensure all images are valid.' 
+      });
+    }
+
+    if (!results || results.length === 0) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'No response from conversion process' 
       });
     }
 
     try {
-      const result = JSON.parse(results[0]);
+      const lastResult = results[results.length - 1];
+      const result = JSON.parse(lastResult);
       if (result.success) {
+        req.session.lastConversion = {
+          file: outputFilename,
+          timestamp: Date.now()
+        };
+        
+        setTimeout(() => {
+          fs.unlink(outputPath, () => {});
+        }, 600000);
+
         res.json({
           success: true,
           message: result.message,
@@ -105,9 +157,11 @@ router.post('/convert/jpg-to-pdf', upload.array('imageFiles', 10), async (req, r
           filename: outputFilename
         });
       } else {
-        res.status(500).json({ success: false, error: result.error });
+        fs.unlink(outputPath, () => {});
+        res.status(400).json({ success: false, error: result.error || 'Conversion failed' });
       }
     } catch (e) {
+      fs.unlink(outputPath, () => {});
       res.status(500).json({ success: false, error: 'Failed to parse conversion result' });
     }
   });
