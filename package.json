@@ -1,0 +1,26 @@
+{
+  "name": "docconvert-tool",
+  "version": "1.0.0",
+  "description": "Document conversion tool with PDF to Word and JPG to PDF functionality",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "pdf",
+    "conversion",
+    "document"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.2",
+    "multer": "^1.4.5-lts.1",
+    "python-shell": "^5.0.0"
+  }
+}
