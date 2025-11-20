@@ -46,7 +46,11 @@ router.post('/convert/pdf-to-word', upload.single('pdfFile'), async (req, res) =
   PythonShell.run('pdf_to_word.py', options, (err, results) => {
     fs.unlink(pdfPath, () => {});
 
+    console.log('PDF to Word conversion - Error:', err);
+    console.log('PDF to Word conversion - Results:', results);
+
     if (err) {
+      console.error('Conversion error:', err);
       return res.status(500).json({ 
         success: false, 
         error: 'Conversion failed. Please ensure the PDF is valid and not corrupted.' 
@@ -54,6 +58,7 @@ router.post('/convert/pdf-to-word', upload.single('pdfFile'), async (req, res) =
     }
 
     if (!results || results.length === 0) {
+      console.error('No results from Python script');
       return res.status(500).json({ 
         success: false, 
         error: 'No response from conversion process' 
@@ -62,6 +67,7 @@ router.post('/convert/pdf-to-word', upload.single('pdfFile'), async (req, res) =
 
     try {
       const lastResult = results[results.length - 1];
+      console.log('Parsing result:', lastResult);
       const result = JSON.parse(lastResult);
       if (result.success) {
         req.session.lastConversion = {
@@ -73,6 +79,7 @@ router.post('/convert/pdf-to-word', upload.single('pdfFile'), async (req, res) =
           fs.unlink(outputPath, () => {});
         }, 600000);
 
+        console.log('Sending success response');
         res.json({
           success: true,
           message: result.message,
@@ -81,11 +88,13 @@ router.post('/convert/pdf-to-word', upload.single('pdfFile'), async (req, res) =
         });
       } else {
         fs.unlink(outputPath, () => {});
+        console.error('Conversion failed:', result.error);
         res.status(400).json({ success: false, error: result.error || 'Conversion failed' });
       }
     } catch (e) {
+      console.error('Parse error:', e);
       fs.unlink(outputPath, () => {});
-      res.status(500).json({ success: false, error: 'Failed to parse conversion result' });
+      res.status(500).json({ success: false, error: 'Failed to parse conversion result: ' + e.message });
     }
   });
 });

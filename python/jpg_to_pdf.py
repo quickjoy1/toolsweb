@@ -2,10 +2,10 @@ import sys
 import json
 import os
 import warnings
+import logging
 
 warnings.filterwarnings('ignore')
-
-sys.stderr = open(os.devnull, 'w')
+logging.getLogger('PIL').setLevel(logging.ERROR)
 
 from PIL import Image
 import img2pdf

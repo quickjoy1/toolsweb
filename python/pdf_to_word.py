@@ -2,10 +2,13 @@ import sys
 import json
 import os
 import warnings
+import logging
 
 warnings.filterwarnings('ignore')
 
-sys.stderr = open(os.devnull, 'w')
+import logging
+logging.basicConfig(level=logging.CRITICAL)
+logging.getLogger().setLevel(logging.CRITICAL)
 
 from pdf2docx import Converter
 
