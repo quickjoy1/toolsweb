@@ -17,5 +17,30 @@
         <li><a href="/about">About</a></li>
         <li><a href="/contact">Contact</a></li>
       </ul>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
     </nav>
   </header>
+
+  <div class="mobile-menu" id="mobileMenu" onclick="closeMobileMenu(event)">
+    <div class="mobile-menu-content">
+      <button class="mobile-menu-close" onclick="closeMobileMenu()">✕</button>
+      <ul class="mobile-nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/pdf-to-word">PDF to Word</a></li>
+        <li><a href="/jpg-to-pdf">JPG to PDF</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('active');
+    }
+    function closeMobileMenu(event) {
+      if (!event || event.target.id === 'mobileMenu') {
+        document.getElementById('mobileMenu').classList.remove('active');
+      }
+    }
+  </script>
