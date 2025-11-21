@@ -4,7 +4,7 @@ module.exports = {
   WEBSITE_NAME: process.env.WEBSITE_NAME || 'DocConvert',
   PORT: process.env.PORT || 5000,
   SESSION_SECRET: process.env.SESSION_SECRET || 'fallback-secret',
-  PYTHON_PATH: process.env.PYTHON_PATH || 'python3',
+  PYTHON_PATH: process.env.PYTHON_PATH || (process.platform === 'win32' ? 'python' : 'python3'),
   UPLOAD_DIR: process.env.UPLOAD_DIR || './public/uploads',
   RESULTS_DIR: process.env.RESULTS_DIR || './public/results',
   SESSION_MAX_AGE: parseInt(process.env.SESSION_MAX_AGE) || 1800000,
